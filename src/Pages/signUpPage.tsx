@@ -3,7 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import '../PageStyles/signUpPageCSS.css';
 
 function SignUpPage() {
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({
+    name: '',
+    username: '',
+    company: '',
+    email: '',
+    password: ''
+  });
+
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -12,8 +19,21 @@ function SignUpPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle signup logic here
-    alert('Signup submitted!');
+    fetch('http://localhost:5000/api/user/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          navigate('/');
+        } else {
+          alert('Signup failed!');
+        }
+      })
+      .catch(() => alert('Signup failed!'));
   };
 
   return (
@@ -26,6 +46,26 @@ function SignUpPage() {
             type="text"
             name="name"
             value={form.name}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <label>
+          Username
+          <input
+            type="text"
+            name="username"
+            value={form.username}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <label>
+          Company
+          <input
+            type="text"
+            name="company"
+            value={form.company}
             onChange={handleChange}
             required
           />

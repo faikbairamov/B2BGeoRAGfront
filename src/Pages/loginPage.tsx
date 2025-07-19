@@ -12,8 +12,21 @@ function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    alert('Login submitted!');
+    fetch('http://localhost:5000/api/user/signIn', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          navigate('/');
+        } else {
+          alert(data.error || 'Login failed!');
+        }
+      })
+      .catch(() => alert('Login failed!'));
   };
 
   return (
