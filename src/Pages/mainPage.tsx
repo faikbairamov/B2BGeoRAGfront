@@ -4,12 +4,14 @@ import Navbar from '../Components/Navbar';
 type FileBoxProps = {
   name: string;
   ext: string;
+  onDelete: () => void;
 };
 
-const FileBox: React.FC<FileBoxProps> = ({ name, ext }) => (
+const FileBox: React.FC<FileBoxProps> = ({ name, ext, onDelete }) => (
   <div className="mainpage-file-box">
     <span>{name}</span>
     <span className="mainpage-file-ext" style={{ color: "var(--text-main)" }}>{ext}</span>
+    <button className="delete-file-btn" onClick={onDelete} title="Remove file">✕</button>
   </div>
 );
 
@@ -39,6 +41,10 @@ function MainPage() {
       name: filename.slice(0, lastDot),
       ext: filename.slice(lastDot)
     };
+  };
+
+  const handleDeleteFile = (filename: string) => {
+    setFiles(prevFiles => prevFiles.filter(f => f.name !== filename));
   };
 
   const handleSendFiles = async () => {
@@ -89,6 +95,7 @@ function MainPage() {
       <div className="mainpage-fields">
         <div className="mainpage-field">
 
+        <label className="custom-file-upload">
           <input
             type="file"
             multiple
@@ -96,13 +103,22 @@ function MainPage() {
             className="mainpage-file-input"
             onChange={handleFileChange}
           />
+          Select PDF Files
+        </label>
           <div className="mainpage-helper-text">
             You can select multiple PDF files at once, or add more later.
           </div>
           <div className="mainpage-file-list">
             {files.map((file, idx) => {
               const { name, ext } = getNameAndExtension(file.name);
-              return <FileBox key={idx} name={name} ext={ext} />;
+              return (
+                <FileBox
+                  key={idx}
+                  name={name}
+                  ext={ext}
+                  onDelete={() => handleDeleteFile(file.name)}
+                />
+              );
             })}
           </div>
           <button
