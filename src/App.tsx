@@ -4,7 +4,7 @@ import SignUpPage from './Pages/signUpPage';
 import LoginPage from './Pages/loginPage';
 import MainPage from './Pages/mainPage';
 import ProtectedRoute from './Helper/ProtectedRoute';
-
+import ChatPage from './Pages/chatPage';
 function App() {
   return (
     <Router>
@@ -17,6 +17,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
+        <Route
+          path="/chatPage"
+          element={
+            <ProtectedRoute>
+              <ChatPage />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
       </Routes>

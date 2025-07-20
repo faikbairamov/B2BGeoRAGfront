@@ -1,0 +1,49 @@
+:root {
+    --navbar-bg: #212121;
+    --navbar-border: #2c2c2c;
+    --navbar-active: #fff;
+    --navbar-inactive: #b0b0b0;
+    --font-family: 'DM Sans', 'Lato', Arial, sans-serif;
+}
+
+.navbar {
+    background-color: var(--navbar-bg);
+    padding: 10px;
+    height: 60px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0.7, 1, 0.2);
+    border: 1px solid var(--navbar-border);
+    gap: 20px;
+}
+
+.cards,
+.chat {
+    height: 60px;
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-inline: 10px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.cards:hover,
+.chat:hover {
+    transform: translateY(-3px);
+}
+
+.cards svg,
+.chat svg {
+    color: var(--navbar-inactive);
+    transition: color 0.2s;
+}
+
+.cards.active svg,
+.chat.active svg {
+    color: var(--navbar-active);
+}

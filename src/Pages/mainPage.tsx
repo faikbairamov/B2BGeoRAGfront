@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../PageStyles/MainPageCSS.css';
-
+import Navbar from '../Components/Navbar';
 type FileBoxProps = {
   name: string;
   ext: string;
@@ -9,7 +9,7 @@ type FileBoxProps = {
 const FileBox: React.FC<FileBoxProps> = ({ name, ext }) => (
   <div className="mainpage-file-box">
     <span>{name}</span>
-    <span className="mainpage-file-ext">{ext}</span>
+    <span className="mainpage-file-ext" style={{ color: "var(--text-main)" }}>{ext}</span>
   </div>
 );
 
@@ -54,31 +54,41 @@ function MainPage() {
     setSending(true);
     const formData = new FormData();
     pdfFiles.forEach(file => formData.append('files', file));
+    // Optionally add userId if you have it, e.g.:
+    // formData.append('userId', userId);
+
+    const token = localStorage.getItem('token');
+
     try {
       const response = await fetch('http://localhost:5000/api/upload', {
         method: 'POST',
         body: formData,
+        headers: {
+          Authorization: token ? `Bearer ${token}` : ''
+        }
       });
+      const data = await response.json().catch(() => ({}));
       if (response.ok) {
         alert('Files sent successfully!');
         setFiles([]);
       } else {
-        alert('Failed to send files.');
+        console.error('Upload error:', data);
+        alert(`Failed to send files. ${data.error || data.message || ''}`);
       }
     } catch (err) {
       alert('Error sending files.');
+      console.error('Network error:', err);
     }
     setSending(false);
   };
 
   return (
     <div className="container">
-      <h2 className="mainpage-title">Upload Files & Ask a Question</h2>
+      <Navbar/>
+      <h2 className="mainpage-title" style={{marginTop:200}}>Upload your files</h2>
       <div className="mainpage-fields">
         <div className="mainpage-field">
-          <label className="mainpage-label">
-            File Upload Section
-          </label>
+
           <input
             type="file"
             multiple
@@ -104,17 +114,7 @@ function MainPage() {
             {sending ? 'Sending...' : 'Send Files'}
           </button>
         </div>
-        <div className="mainpage-field">
-          <label className="mainpage-label">
-            Your Question
-          </label>
-          <textarea
-            className="large-scrollable-textarea"
-            placeholder="Type your question here..."
-            value={question}
-            onChange={e => setQuestion(e.target.value)}
-          />
-        </div>
+      
       </div>
     </div>
   );
